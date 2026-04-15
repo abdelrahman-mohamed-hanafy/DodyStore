@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "865621798465",
+    "project_id": "dody-store-f40d2",
+    "storage_bucket": "dody-store-f40d2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865621798465:android:5412bd26a4370f1f1360c0",
+        "android_client_info": {
+          "package_name": "com.Abdelrahman.dody_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "865621798465-i0sd428i15jn15gdk01lfg252raobll0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.Abdelrahman.dody_store",
+            "certificate_hash": "9e28576c9bef302120c74f5b9bd6083702c87971"
+          }
+        },
+        {
+          "client_id": "865621798465-4rlon3svkljfs2dn16ab1vqqlvf1o2cu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCl099pWusMIbRJEzAk1ffCkpVphv-GoQA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "865621798465-4rlon3svkljfs2dn16ab1vqqlvf1o2cu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "865621798465-836ggqjc56mpa3upvav253qkn5f5g40r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.Abdelrahman.dodyStore"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,17 +21,20 @@ class CustomPage extends StatelessWidget {
           alignment: Alignment.topRight,
           child: Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('Skip', style: TextStyle(fontSize: 18,color: Colors.white)),
-                const SizedBox(width: 2.0,),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: Colors.white,
-                ),
-              ],
+            child: InkWell(
+              onTap: ()=> controller.onSkip(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text('Skip', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  const SizedBox(width: 2.0,),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
 

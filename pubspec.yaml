@@ -41,15 +41,17 @@ dependencies:
   hive_flutter: ^1.1.0
   font_awesome_flutter: ^11.0.0
   google_sign_in: ^7.2.0
-  flutter_facebook_auth: ^7.1.6
+  flutter_facebook_auth: ^7.2.0
   smooth_page_indicator: ^2.0.1
   connectivity_plus: ^7.1.0
   cloud_firestore: ^6.2.0
   cached_network_image: ^3.4.1
-  supabase_flutter: ^2.12.2
+  supabase_flutter: ^2.15.0
   flutter_dotenv: ^6.0.0
   image_picker: ^1.2.1
   firebase_storage: ^13.3.0
+  app_links: ^7.0.0
+  carousel_slider: ^5.1.2
 
 dev_dependencies:
   flutter_test:

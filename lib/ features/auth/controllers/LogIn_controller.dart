@@ -1,149 +1,209 @@
+import 'dart:async';
+
+import 'package:dody_store/core/services/Supabase_Service.dart';
 import 'package:dody_store/core/utils/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 import '../../../core/services/internet_service.dart';
-import '../UI/state/Auth_state.dart';
-import '../../../core/services/Firebase_Service.dart';
+import '../UI/state/Auth_State.dart';
 
-class LogInController extends GetxController{
+class LogInController extends GetxController {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
-  final Rx<bool> isPassword = true.obs;
+
+  final isPassword = true.obs;
+
   final emailError = Rx<String?>(null);
   final passwordError = Rx<String?>(null);
-  final auth = Get.find<FirebaseService>();
+
+  final auth = Get.find<SupabaseService>();
   final internet = Get.find<InternetService>();
+
   final state = Rx<AuthState>(Idle());
+
+  late Worker _worker;
+  late final StreamSubscription _authSubscription;
 
   @override
   void onInit() {
-    ever(state, (value) {
+    super.onInit();
+
+    _worker = ever<AuthState>(state, (value) {
       if (value is Success) {
         Get.offAllNamed(AppRoutes.mainPage);
       } else if (value is Error) {
-        Get.snackbar("Error", value.message);
+        Get.snackbar(
+          "Error",
+          value.message,
+          snackPosition: SnackPosition.BOTTOM,
+        );
       } else if (value is Cancelled) {
-        Get.snackbar("Cancelled", "Login cancelled");
+        Get.snackbar(
+          "Cancelled",
+          "Login cancelled",
+          snackPosition: SnackPosition.BOTTOM,
+        );
       }
     });
+
     emailController.addListener(() {
-      if (GetUtils.isEmail(emailController.text)) {
+      if (GetUtils.isEmail(emailController.text.trim())) {
         emailError.value = null;
       }
     });
 
     passwordController.addListener(() {
-      passwordError.value = null;
+      if (passwordController.text.trim().length >= 6) {
+        passwordError.value = null;
+      }
     });
-    super.onInit();
+
+    _authSubscription =
+        Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+          switch (data.event) {
+            case AuthChangeEvent.signedIn:
+              if (data.session != null) {
+                state.value = Success(data.session!.user);
+              }
+              break;
+
+            case AuthChangeEvent.signedOut:
+              state.value = Idle();
+              break;
+
+
+            default:
+              break;
+          }
+        });
   }
+
   @override
   void onClose() {
     emailController.dispose();
     passwordController.dispose();
+
     emailFocusNode.dispose();
     passwordFocusNode.dispose();
+
+    _worker.dispose();
+    _authSubscription.cancel();
+
     super.onClose();
   }
 
   Future<void> onPressed() async {
-      final isValid = check();
-      if (!isValid) return;
+    if (state.value is Loading) return;
+
+    if (!check()) return;
+
     final hasInternet = await internet.hasInternet();
+
     if (!hasInternet) {
       state.value = Error("No internet connection");
       return;
     }
-      state.value = Loading();
-      try {
-      final user = await auth.login(
-        emailController.text.trim(),
-        passwordController.text.trim(),
-      );
 
-      state.value = Success(user);
+    state.value = Loading();
+
+    try {
+      await auth.login(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+    } catch (e) {
+      state.value = Error(_extractMessage(e));
+    }
+  }
+
+  Future<void> loginWithGoogle() async {
+    if (state.value is Loading) return;
+
+    final hasInternet = await internet.hasInternet();
+
+    if (!hasInternet) {
+      state.value = Error("No internet connection");
+      return;
+    }
+
+    state.value = Loading();
+
+    try {
+      await auth.signInWithGoogle();
 
     } catch (e) {
       final message = _extractMessage(e);
 
-      if (message.contains("No user found")) {
-        state.value = Error("No account found with this email");
-      } else if (message.contains("Wrong password")) {
-        state.value = Error("Incorrect password");
+      if (message.toLowerCase().contains("cancel")) {
+        state.value = Cancelled();
       } else {
         state.value = Error(message);
       }
     }
   }
 
-  // check
-  bool check() {
-    bool isValid = true;
-    if (emailController.text.trim().isEmpty) {
-      emailError.value = "Email is required";
-      isValid = false;
-    } else if (!GetUtils.isEmail(emailController.text.trim())) {
-      emailError.value = "Please enter a valid email";
-      isValid = false;
+  Future<void> logInWithFacebook() async {
+    if (state.value is Loading) return;
+
+    final hasInternet = await internet.hasInternet();
+
+    if (!hasInternet) {
+      state.value = Error("No internet connection");
+      return;
     }
 
-    if (passwordController.text.trim().isEmpty) {
-      passwordError.value = "Password is required";
-      isValid = false;
-    }
-    return isValid;
-  }
-  // SignIn with Google
-  Future<void> loginWithGoogle() async {
-   state.value = Loading();
-   try{
-     final user = await auth.signInWithGoogle();
-     if(user != null){
-       state.value = Success(user);
-     }else{
-       state.value = Cancelled();
-     }
-   }catch (e) {
-     final message = _extractMessage(e);
-     if (message.contains("already registered")) {
-       state.value = Error(
-         "This email is already registered. Please login using the original method.",
-       );
-     } else {
-       state.value = Error(message);
-       print("Google Sign-In Error: $message");
-     }
-   }
-  }
-  // SignIn with Facebook
-  Future<void> logInWithFacebook() async {
     state.value = Loading();
-    try {
-      final user = await auth.signInWithFacebook();
-      if (user != null) {
-        state.value = Success(user);
-      } else {
+      await auth.signInWithFacebook();
+      // اضريت لهذا لان الsignInWithOAuth مبيرميش cancel Exception
+    Future.delayed(const Duration(seconds: 1), () {
+      if (state.value is Loading &&
+          Supabase.instance.client.auth.currentSession == null) {
         state.value = Cancelled();
       }
-    } catch (e) {
-      final message = _extractMessage(e);
-      if (message.contains("already registered")) {
-        state.value = Error(
-          "This email is already registered. Please login using the original method.",
-        );
-      } else {
-        state.value = Error(message);
-      }
-    }
+    });
   }
+
+  bool check() {
+    bool valid = true;
+
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    emailError.value = null;
+    passwordError.value = null;
+
+    if (email.isEmpty) {
+      emailError.value = "Email is required";
+      valid = false;
+    } else if (!GetUtils.isEmail(email)) {
+      emailError.value = "Please enter a valid email";
+      valid = false;
+    }
+
+    if (password.isEmpty) {
+      passwordError.value = "Password is required";
+      valid = false;
+    } else if (password.length < 6) {
+      passwordError.value = "Password must be at least 6 characters";
+      valid = false;
+    }
+    return valid;
+  }
+
   String _extractMessage(Object e) {
+    if (e is AuthException) {
+      return auth.mapAuthError(e);
+    }
+
     if (e is Exception) {
       return e.toString().replaceFirst("Exception: ", "");
     }
+
     return "Something went wrong";
   }
-
 }

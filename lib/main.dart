@@ -2,7 +2,7 @@ import 'package:dody_store/core/services/Supabase_Service.dart';
 import 'package:dody_store/core/theme/app_colors.dart';
 import 'package:dody_store/core/utils/routing/router.dart';
 import 'package:dody_store/core/utils/routing/routes.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart' hide FirebaseService;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -19,8 +19,12 @@ Future<void> main() async {
   );
   await dotenv.load(fileName: ".env");
   await Supabase.initialize(
-      url: dotenv.env["SUPABASE_URL"]!,
-      anonKey: dotenv.env["SUOABASE_KEY"]!);
+    url: dotenv.env["SUPABASE_URL"]!,
+    anonKey: dotenv.env["SUPABASE_KEY"]!,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
+  );
   final hive = HiveService();
   await hive.init();
   runApp( MyApp(hive: hive,));

@@ -1,9 +1,9 @@
+import 'package:dody_store/core/services/Supabase_Service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../core/services/internet_service.dart';
 import '../../../core/utils/routing/routes.dart';
-import '../UI/state/Auth_state.dart';
-import '../../../core/services/Firebase_Service.dart';
+import '../UI/state/Auth_State.dart';
 
 class SignUpController extends GetxController {
   final nameController = TextEditingController();
@@ -19,23 +19,9 @@ class SignUpController extends GetxController {
   final passwordError = Rx<String?>(null);
   final nameError = Rx<String?>(null);
   final confirmPasswordError = Rx<String?>(null);
-  final auth = Get.find<FirebaseService>();
+  final auth = Get.find<SupabaseService>();
   final internet = Get.find<InternetService>();
   var state = Rx<AuthState>(Idle());
-
-  @override
-  void onClose() {
-    nameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
-    nameFocusNode.dispose();
-    emailFocusNode.dispose();
-    passwordFocusNode.dispose();
-    confirmPasswordFocusNode.dispose();
-
-    super.onClose();
-  }
 
   @override
   void onInit() {
@@ -65,13 +51,15 @@ class SignUpController extends GetxController {
       }
     });
 
-    ever(state, (value) {
-      if (value is Success) {
-        Get.offAllNamed(AppRoutes.logIn);
-      } else if (value is Error) {
-        Get.snackbar("Error", value.message);
-      }
-    });
+    // ever(state, (value) {
+    //   if (value is Success) {
+    //     FocusManager.instance.primaryFocus?.unfocus();
+    //
+    //     Future.microtask(() {
+    //       Get.offAllNamed(AppRoutes.logIn);
+    //     });
+    //   }
+    // });
   }
 
   void onPressed() async {
@@ -88,51 +76,99 @@ class SignUpController extends GetxController {
     }
     try {
       final user = await auth.signUp(
-        emailController.text.trim(),
-        passwordController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text.trim()
       );
       state.value = Success(user);
+      Get.snackbar(
+        'Success',
+        'Account created successfully, please check your email for verification',
+      );
+
+      Get.offNamed(AppRoutes.logIn);
     } catch (e) {
       state.value = Error(_extractMessage(e));
+      Get.snackbar('Error', _extractMessage(e));
     }
   }
-
   bool check() {
-    bool isValid = true;
-
+    return _validateName() &
+    _validateEmail() &
+    _validatePassword() &
+    _validateConfirmPassword();
+  }
+  bool _validateName() {
     if (nameController.text.trim().isEmpty) {
       nameError.value = "Enter your name";
-      isValid = false;
+      return false;
     }
+    return true;
+  }
 
+  bool _validateEmail() {
     if (!GetUtils.isEmail(emailController.text.trim())) {
       emailError.value = "Enter valid email";
-      isValid = false;
+      return false;
     }
+    return true;
+  }
 
-    if (passwordController.text.trim().isEmpty) {
+  bool _validatePassword() {
+    final password = passwordController.text.trim();
+
+    if (password.isEmpty) {
       passwordError.value = "Enter your password";
-      isValid = false;
+      return false;
     }
 
-    else if (passwordController.text.length < 6) {
-      passwordError.value = "Password must be at least 6 characters";
-      isValid = false;
+    if (password.length < 8) {
+      passwordError.value =
+      "Password must be at least 8 characters";
+      return false;
     }
 
-    if (passwordController.text != confirmPasswordController.text) {
-      confirmPasswordError.value = "Passwords do not match";
-      isValid = false;
+    if (!RegExp(r'[A-Z]').hasMatch(password)) {
+      passwordError.value =
+      "Password must contain an uppercase letter";
+      return false;
     }
+
+    if (!RegExp(r'[a-z]').hasMatch(password)) {
+      passwordError.value =
+      "Password must contain a lowercase letter";
+      return false;
+    }
+
+    if (!RegExp(r'\d').hasMatch(password)) {
+      passwordError.value =
+      "Password must contain a number";
+      return false;
+    }
+
+    if (!RegExp(r'[@$!%*?&]').hasMatch(password)) {
+      passwordError.value =
+      "Password must contain a special character \n(@, \$, !, %, *, ?, &)";
+      return false;
+    }
+
+    return true;
+  }
+
+  bool _validateConfirmPassword() {
     if (confirmPasswordController.text.isEmpty) {
-      confirmPasswordError.value = "Confirm your password";
-      isValid = false;
-    } else if (passwordController.text != confirmPasswordController.text) {
-      confirmPasswordError.value = "Passwords do not match";
-      isValid = false;
+      confirmPasswordError.value =
+      "Confirm your password";
+      return false;
     }
 
-    return isValid;
+    if (passwordController.text !=
+        confirmPasswordController.text) {
+      confirmPasswordError.value =
+      "Passwords do not match";
+      return false;
+    }
+
+    return true;
   }
 
   String _extractMessage(Object e) {
@@ -147,5 +183,17 @@ class SignUpController extends GetxController {
     emailError.value = null;
     passwordError.value = null;
     confirmPasswordError.value = null;
+  }
+  @override
+  void onClose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    confirmPasswordFocusNode.dispose();
+    super.onClose();
   }
 }

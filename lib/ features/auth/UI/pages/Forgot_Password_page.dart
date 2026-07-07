@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../core/widgets/custom_buttton.dart';
 import '../../controllers/Forgot_Password_controller.dart';
-import '../state/Auth_state.dart';
+import '../state/Auth_State.dart';
 import '../widgets/TextField_wid.dart';
 import '../../../../core/theme/AppBackground.dart';
 

@@ -1,0 +1,58 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../controller/Home_Controller.dart';
+import 'Slider.dart';
+
+
+class HomeOfferSlider extends StatefulWidget {
+  const HomeOfferSlider({super.key});
+
+  @override
+  State<HomeOfferSlider> createState() => _HomeOfferSliderState();
+}
+
+class _HomeOfferSliderState extends State<HomeOfferSlider> {
+  final controller = Get.find<HomeController>();
+
+  int currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (controller.offers.isEmpty) {
+        return const SizedBox.shrink();
+      }
+
+      return Column(
+        children: [
+          CarouselSlider.builder(
+            itemCount: controller.offers.length,
+            itemBuilder: (context, index, realIndex) {
+              final offer = controller.offers[index];
+              return OfferSliderItem(
+                title: offer.title,
+                subTitle: offer.subtitle,
+                image: offer.imageUrl,
+                discount: offer.discount,
+                buttonText: offer.buttonText,
+                onTap: () {
+                  print("Offer Clicked: ${offer.title}");
+                  controller.openOffer(offer);
+                },
+              );
+            },
+            options: CarouselOptions(
+              height: 210,
+              autoPlay: true,
+              enlargeCenterPage: true,
+              viewportFraction: .95,
+              autoPlayInterval: const Duration(seconds: 4),
+            ),
+          )
+        ],
+      );
+    });
+  }
+}

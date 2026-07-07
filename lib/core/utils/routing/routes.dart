@@ -1,4 +1,3 @@
-
 abstract class AppRoutes {
   static const splash = '/splash';
   static const onboarding = '/onboarding';
@@ -12,12 +11,10 @@ abstract class AppRoutes {
   static const profile = '/profile';
   static const productPage = '/product';
   static const favourites = '/favorites';
-  static const notification = '/favorites';
-  static const hoodies = '/hoodies';
-  static const womenAccessories = '/WomenAccessories';
-  static const menAccessories = '/MenAccessories';
-  static const bags = '/Bags';
+  static const notification = '/notification';
   static const productDetails = '/productDetails';
+  static const myOrdersPage = '/myOrdersPage';
+  static const offersPage = '/offersPage';
 
 
 }

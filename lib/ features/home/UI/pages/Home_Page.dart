@@ -1,8 +1,6 @@
 import 'package:dody_store/core/theme/AppBackground.dart';
-import 'package:dody_store/core/utils/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../controller/DrawerController.dart';
 import '../../controller/Home_Controller.dart';

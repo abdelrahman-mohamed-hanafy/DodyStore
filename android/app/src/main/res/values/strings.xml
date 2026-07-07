@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Doody Store</string>
-    <string name="facebook_app_id">1655667928903863</string>
-    <string name="fb_login_protocol_scheme">fb1234</string>
-    <string name="facebook_client_token">59d25996534fb22d4e3d480b8208ba04</string>
+
+    <string name="facebook_app_id">981530651580668</string>
+
+    <string name="fb_login_protocol_scheme">fb981530651580668</string>
+
+    <string name="facebook_client_token">972453bc3d647d5f15f9e44d90c79141</string>
 </resources>

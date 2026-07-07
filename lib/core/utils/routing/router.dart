@@ -1,14 +1,15 @@
 import 'package:dody_store/core/utils/routing/routes.dart';
 import 'package:get/get.dart';
+import '../../../ features/Cart/Controller/cart_controller.dart';
 import '../../../ features/Cart/UI/Pages/cart_page.dart';
 import '../../../ features/Favourites/UI/pages/favourite_page.dart';
+import '../../../ features/Favourites/controller/favourite_controller.dart';
+import '../../../ features/MyOrders/UI/My_Order_Page.dart';
 import '../../../ features/Notification/UI/pages/notification_page.dart';
-import '../../../ features/Products/UI/pages/bags_page.dart';
-import '../../../ features/Products/UI/pages/hoodies_page.dart';
-import '../../../ features/Products/UI/pages/men_accessories.dart';
+import '../../../ features/Offers/Controller/offers_controller.dart';
+import '../../../ features/Offers/UI/offers_page.dart';
 import '../../../ features/Products/UI/pages/product_details.dart';
 import '../../../ features/Products/UI/pages/products_page.dart';
-import '../../../ features/Products/UI/pages/womenAccessories_page.dart';
 import '../../../ features/Products/controller/ProductDetailsController.dart';
 import '../../../ features/Profile/UI/Pages/profile_page.dart';
 import '../../../ features/Search/UI/Pages/search_page.dart';
@@ -64,23 +65,35 @@ class AppPages {
           Get.lazyPut(() => ForgotPasswordController());
         }),
     ),
+    GetPage(name: AppRoutes.cart,
+      page:()=> CartPage(),
+      binding: BindingsBuilder((){
+        Get.lazyPut(() => CartController());
+      })
+    ),
     GetPage(name: AppRoutes.mainPage, page:()=> MainPage(),
     binding: MainBinding()),
     GetPage(name: AppRoutes.search, page:()=> SearchPage(),),
     GetPage(name: AppRoutes.profile, page:()=> ProfilePage(),),
-    GetPage(name: AppRoutes.cart, page:()=> CartPage(),),
+  GetPage(name: AppRoutes.myOrdersPage, page:()=> MyOrderPage(),),
     GetPage(name: AppRoutes.productPage, page:()=> ProductsPage(),),
-    GetPage(name: AppRoutes.favourites, page:()=> FavouritePage(),),
+    GetPage(name: AppRoutes.favourites, page:()=> FavouritePage(),
+    binding: BindingsBuilder((){
+      Get.lazyPut(() => FavouriteController());
+    })),
+
     GetPage(name: AppRoutes.notification, page:()=> NotificationPage(),),
-    GetPage(name: AppRoutes.hoodies, page:()=> HoodiesPage(),),
-    GetPage(name: AppRoutes.womenAccessories, page:()=>WomenAccessoriesPage(),),
-    GetPage(name: AppRoutes.menAccessories, page:()=> MenAccessories(),),
-    GetPage(name: AppRoutes.bags, page:()=> BagsPage(),),
+
     GetPage(name: AppRoutes.productDetails, page:()=> ProductDetails(),
     binding: BindingsBuilder((){
       Get.lazyPut(() => ProductDetailsController());
     })
     ),
+    GetPage(name: AppRoutes.offersPage, page:()=>OffersPage(),
+    binding: BindingsBuilder((){
+      Get.lazyPut(() => OffersController());
+    })
+    )
 
   ];
 }

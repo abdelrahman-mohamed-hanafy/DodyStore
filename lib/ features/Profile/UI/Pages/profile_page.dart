@@ -59,26 +59,31 @@ class ProfilePage extends StatelessWidget {
                             children: [
                               profileItem(title: 'Help Center', prefixIcon: Icons.help_outline, onTap: () {}),
                               profileItem(title: 'Contact Us', prefixIcon: Icons.headset_mic, onTap: () {}),
-                              Container(
-                                width: double.infinity,
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 14),
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.circular(15),
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFFFF7CA3),
-                                      Color(0xFF8F7CFF),
-                                    ],
+                              InkWell(
+                                onTap: (){
+                                  controller.logOut();
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(15),
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFFF7CA3),
+                                        Color(0xFF8F7CFF),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                child: const Center(
-                                  child: Text(
-                                    "Logout",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                  child: const Center(
+                                    child: Text(
+                                      "Logout",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),

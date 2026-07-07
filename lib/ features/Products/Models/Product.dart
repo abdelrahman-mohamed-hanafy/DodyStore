@@ -10,7 +10,7 @@ class Product {
   final List<String> colors;
 
   final String categoryId;
-  final String? categoryName; // ✅ ADD THIS
+  final String? categoryName;
 
   final DateTime? updatedAt;
 
@@ -23,7 +23,7 @@ class Product {
     required this.sizes,
     required this.colors,
     required this.categoryId,
-    required this.categoryName, // ✅ ADD THIS
+    required this.categoryName,
     required this.updatedAt,
   });
 

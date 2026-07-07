@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/utils/routing/routes.dart';
 import '../../../../core/widgets/custom_buttton.dart';
 import '../../controllers/SignUp_controller.dart';
-import '../state/Auth_state.dart';
+import '../state/Auth_State.dart';
 import '../../../../core/theme/AppBackground.dart';
 import '../widgets/TextField_wid.dart';
 
@@ -219,8 +219,7 @@ class SignUpPage extends GetView<SignUpController> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Get.toNamed(
-                                            AppRoutes.logIn);
+                                        Get.toNamed(AppRoutes.logIn);
                                       },
                                       child: const Text(
                                         'Log IN',

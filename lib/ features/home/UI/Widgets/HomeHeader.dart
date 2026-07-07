@@ -1,109 +1,119 @@
+import 'package:dody_store/core/widgets/badge_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/utils/routing/routes.dart';
+import '../../../Products/controller/ProductController.dart';
+import '../../../main/Controller/main_controller.dart';
 import '../../Model/Category_Model.dart';
 import '../../controller/Home_Controller.dart';
 import 'CategoryItem.dart';
+import 'HomeOfferSlider.dart';
 
 class HomeHeader extends StatelessWidget {
   HomeHeader({super.key, required this.scaffoldKey});
 
   final controller = Get.find<HomeController>();
+  final mainController = Get.find<MainController>();
+  final productController = Get.find<ProductController>();
+
   final GlobalKey<ScaffoldState> scaffoldKey;
   CategoryModel? category;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 30, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 40, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05), // 🔥 Glass effect
+        color: Colors.white.withOpacity(0.05),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(40),
           bottomRight: Radius.circular(40),
         ),
-        border: Border.all(color: Colors.white.withOpacity(0.1)), // 🔥 subtle border
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           /// 🔝 Top Icons Row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Builder(
-                builder: (context) {
-                  return IconButton(
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
-                      scaffoldKey.currentState?.openDrawer();
-                    },
-                    icon: const Icon(Icons.menu, color: Colors.white),
-                  );
-                },
+        Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          InkWell(
+            borderRadius: BorderRadius.circular(30),
+            onTap: () {
+              FocusScope.of(context).unfocus();
+              scaffoldKey.currentState?.openDrawer();
+            },
+            child: const SizedBox(
+              width: 42,
+              height: 42,
+              child: Icon(
+                Icons.menu_rounded,
+                color: Colors.white,
+                size: 30,
               ),
-              Row(
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          Expanded(
+            child: Obx(
+                  () => Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.notification);
-                    },
-                    icon: const Icon(Icons.notifications_none,
-                        color: Colors.white),
+                  Text(
+                    "${controller.getGreeting()} 👋",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      height: 1,
+                    ),
                   ),
-                  const SizedBox(width: 12),
-                  IconButton(
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.favourites);
-                    },
-                    icon: const Icon(Icons.favorite_border,
-                        color: Colors.white),
+
+                  const SizedBox(height: 6),
+
+                  Text(
+                    controller.userName.value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      height: 1,
+                    ),
                   ),
                 ],
-              )
-            ],
-          ),
-
-          const Text(
-            "Welcome 👋",
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              ),
             ),
           ),
 
-          const SizedBox(height: 8),
-
-          /// 🔥 Gradient Title (محافظ عليه)
-          Text(
-            "Find Your Style.",
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              foreground: Paint()
-                ..shader = const LinearGradient(
-                  colors: [
-                    Color(0xFFFF7CA3),
-                    Color(0xFF8F7CFF),
-                  ],
-                ).createShader(
-                  const Rect.fromLTWH(0, 0, 300, 50),
-                ),
+          Obx(
+                () => BadgeIcon(
+              icon: Icons.notifications_none_rounded,
+              count: controller.notificationCount.value,
+              onTap: () => Get.toNamed(AppRoutes.notification),
             ),
           ),
 
-          const SizedBox(height: 8),
+          const SizedBox(width: 8),
 
-          const Text(
-            "Premium Accessories & Hoodies",
-            style: TextStyle(color: Colors.white60),
+          Obx(
+                () => BadgeIcon(
+              icon: Icons.favorite_border_rounded,
+              count: controller.favoriteCount.value,
+              onTap: () => Get.toNamed(AppRoutes.favourites),
+            ),
           ),
-
-          const SizedBox(height: 20),
-
+        ],
+      ),
+          const SizedBox(height: 8),
           /// 🔍 Search Bar (Glass أقوى)
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -114,26 +124,33 @@ class HomeHeader extends StatelessWidget {
               border: Border.all(color: Colors.white.withOpacity(0.1)),
             ),
             child: Row(
-              children: const [
-                Icon(Icons.search, color: Colors.white60),
-                SizedBox(width: 10),
+              children: [
+                const Icon(Icons.search, color: Colors.white60),
+                const SizedBox(width: 10),
                 Expanded(
                   child: TextField(
+                    onTap: () => Get.toNamed(AppRoutes.search),
                     readOnly: true,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
                       hintText: "Search products...",
                       hintStyle: TextStyle(color: Colors.white60),
                       border: InputBorder.none,
                     ),
                   ),
                 ),
-                Icon(Icons.tune, color: Colors.white60),
+                const Icon(Icons.tune, color: Colors.white60),
               ],
             ),
           ),
 
           const SizedBox(height: 20),
+
+          const HomeOfferSlider(),
+
+          const SizedBox(height: 20),
+          Text('Categories', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white)),
+          const SizedBox(height: 8.0),
 
           /// 🧿 Categories
           SizedBox(
@@ -149,17 +166,8 @@ class HomeHeader extends StatelessWidget {
 
                   return InkWell(
                     onTap: () {
-                      if (category.name == "Hoodies") {
-                        Get.toNamed(AppRoutes.hoodies);
-                      } else if (category.name ==
-                          "Women Accessories") {
-                        Get.toNamed(AppRoutes.womenAccessories);
-                      } else if (category.name ==
-                          "Men Accessories") {
-                        Get.toNamed(AppRoutes.menAccessories);
-                      } else if (category.name == "Bags") {
-                        Get.toNamed(AppRoutes.bags);
-                      }
+                      productController.selectCategory(category.id);
+                      mainController.changeIndex(1);
                     },
                     child: CategoryItem_Widget(
                       title: category.name,

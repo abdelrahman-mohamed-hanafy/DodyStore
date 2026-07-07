@@ -3,7 +3,7 @@ class CategoryModel {
   final String name;
   final String image;
   final DateTime createdAt;
-  final int productsCount; // 🔥 الجديد
+  final int productsCount;
 
   CategoryModel({
     required this.id,

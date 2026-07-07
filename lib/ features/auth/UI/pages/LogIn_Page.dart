@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/widgets/custom_buttton.dart';
 import '../../controllers/LogIn_controller.dart';
-import '../state/Auth_state.dart';
+import '../state/Auth_State.dart';
 import '../widgets/SocialButton.dart';
 import '../widgets/TextField_wid.dart';
 import '../../../../core/theme/AppBackground.dart';
@@ -241,8 +241,7 @@ class LogInPage extends GetView<LogInController> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Get.toNamed(
-                                            AppRoutes.signUp);
+                                        Get.toNamed(AppRoutes.signUp);
                                       },
                                       child: const Text(
                                         'Sign Up',

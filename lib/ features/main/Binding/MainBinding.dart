@@ -13,14 +13,17 @@ import '../Controller/main_controller.dart';
 class MainBinding extends Bindings {
   @override
   void dependencies() {
+    Get.lazyPut<FavouriteController>(
+          () => FavouriteController(),
+      fenix: true,
+    );
+    Get.lazyPut(() => ProductDetailsController());
     Get.lazyPut(() => ProductController());
     Get.put(DrawerControllerX(), permanent: true);
-    Get.put(HomeController(), permanent: true);
     Get.lazyPut(() => MainController());
+    Get.put(HomeController(), permanent: true);
     Get.lazyPut(() => SearchController());
     Get.lazyPut(() => CartController());
     Get.lazyPut(() => ProfileController());
-    Get.lazyPut(() => FavouriteController());
-    Get.lazyPut(() => ProductDetailsController());
-  }
-}
+
+}}

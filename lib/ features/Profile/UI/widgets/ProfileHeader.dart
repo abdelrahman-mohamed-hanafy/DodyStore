@@ -23,34 +23,34 @@ class ProfileHeader extends StatelessWidget {
                   ? const Icon(Icons.person, size: 40, color: Colors.white)
                   : null,
             )),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.all(6),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                ),
-                child:IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    Get.defaultDialog(
-                      title: "Change Photo",
-                      middleText: "Choose source",
-                      textConfirm: "Camera",
-                      textCancel: "Gallery",
-                      onConfirm: () {
-                        Get.back();
-                        controller.pickAndUploadImage(ImageSource.camera);
-                      },
-                      onCancel: () {
-                        controller.pickAndUploadImage(ImageSource.gallery);
-                      },
-                    );
-                  },
-              ),)
-            ),
+            // Positioned(
+            //   bottom: 0,
+            //   right: 0,
+            //   child: Container(
+            //     padding: const EdgeInsets.all(6),
+            //     decoration: const BoxDecoration(
+            //       shape: BoxShape.circle,
+            //       color: Colors.white,
+            //     ),
+            //     child:IconButton(
+            //       icon: const Icon(Icons.edit),
+            //       onPressed: () {
+            //         Get.defaultDialog(
+            //           title: "Change Photo",
+            //           middleText: "Choose source",
+            //           textConfirm: "Camera",
+            //           textCancel: "Gallery",
+            //           onConfirm: () {
+            //             Get.back();
+            //             controller.pickAndUploadImage(ImageSource.camera);
+            //           },
+            //           onCancel: () {
+            //             controller.pickAndUploadImage(ImageSource.gallery);
+            //           },
+            //         );
+            //       },
+            //   ),)
+            // ),
           ],
         ),
         const SizedBox(height: 12),

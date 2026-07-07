@@ -61,9 +61,7 @@ class MainPage extends GetView<MainController> {
                       "Profile",
                     ];
 
-                    bool isSelected =
-                        controller.currentIndex.value ==
-                            index;
+                    bool isSelected = controller.currentIndex.value == index;
 
                     return GestureDetector(
                       onTap: () =>

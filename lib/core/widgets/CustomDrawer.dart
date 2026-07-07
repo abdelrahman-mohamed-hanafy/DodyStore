@@ -181,7 +181,7 @@ class CustomDrawer extends StatelessWidget {
                 Get.find<MainController>().changeIndex(2);
                 break;
               case "Profile":
-                Get.find<MainController>().changeIndex(3);
+                Get.find<MainController>().changeIndex(4);
                 break;
             }
           }

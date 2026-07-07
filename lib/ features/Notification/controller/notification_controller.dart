@@ -1,3 +1,10 @@
 import 'package:get/get.dart';
-
-class NotificationController extends GetxController{}
+enum NotificationType {
+  offer,
+  order,
+  product,
+  account,
+}
+class NotificationController extends GetxController{
+ 
+}

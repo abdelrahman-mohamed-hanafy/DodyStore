@@ -2,6 +2,9 @@ import 'package:dody_store/core/utils/routing/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Cart/Controller/cart_controller.dart';
+import '../../../main/Controller/main_controller.dart';
+
 class ProductPageHeader extends StatelessWidget {
   const ProductPageHeader({super.key});
 
@@ -37,22 +40,33 @@ class ProductPageHeader extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Builder(
-                      builder: (context) => IconButton(
-                        onPressed: () => Scaffold.of(context).openDrawer(),
-                        icon: Icon(Icons.menu, color: Colors.white,size: 30,),
-                      ),
+                      builder: (context) =>
+                          IconButton(
+                            onPressed: () => Scaffold.of(context).openDrawer(),
+                            icon: Icon(
+                              Icons.menu, color: Colors.white, size: 30,),
+                          ),
                     ),
-                    IconButton(
+                    Obx(() {
+                      final cartController = Get.find<CartController>();
+                      return
+                      cartController.cartItems.isEmpty?IconButton(
                       alignment: Alignment.topRight,
                       onPressed: () {
-                        Get.toNamed(AppRoutes.notification);
-                      },
-                      icon: Icon(
-                        Icons.notifications_outlined,
-                        color: Colors.white.withOpacity(0.9),
-                        size: 30,
-                      ),
-                    ),
+                        final mainController = Get.find<MainController>();
+                        mainController.changeIndex(2);
+                      }, icon: Icon(Icons.remove_shopping_cart_rounded, color: Colors.white
+                          .withOpacity(0.9),
+                        size: 30,),):
+                       IconButton(
+                        alignment: Alignment.topRight,
+                        onPressed: () {
+                          final mainController = Get.find<MainController>();
+                          mainController.changeIndex(2);
+                        }, icon: Icon(Icons.shopping_cart, color: Colors.white
+                          .withOpacity(0.9),
+                        size: 30,),);
+                    })
                   ],
                 ),
               ],

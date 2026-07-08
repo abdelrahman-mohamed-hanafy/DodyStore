@@ -120,6 +120,5 @@ class OfferModel {
 
   bool get hasAction => actionType != OfferActionType.none;
 
-  bool get isExpired =>
-      endDate != null && endDate!.isBefore(DateTime.now());
+  bool get isExpired => endDate != null && endDate!.isBefore(DateTime.now());
 }

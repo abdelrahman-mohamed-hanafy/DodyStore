@@ -326,7 +326,9 @@ class SupabaseService {
   // ================= CATEGORIES =================
   Future<ApiResult<List<Map<String, dynamic>>>> getCategoriesWithCount() async {
     try {
-      final response = await supabase.rpc('get_categories_with_count');
+      final response = await supabase
+          .from('categories')
+          .select();
 
       return ApiResult(
         data: List<Map<String, dynamic>>.from(response),
@@ -336,32 +338,104 @@ class SupabaseService {
     }
   }
 
-  // ================= RANDOM / ALL PRODUCTS =================
-  Future<ApiResult<List<Product>>> getProducts({int? limit}) async {
+  // ================= HOME PRODUCTS =================
+  // Get Featured Products
+  Future<ApiResult<List<Product>>> getFeaturedProducts({
+    int limit = 10,
+  }) async {
     try {
-      List response;
-
-      if (limit != null) {
-        response = await supabase.rpc(
-          'get_random_products',
-          params: {'limit_count': limit},
-        );
-      } else {
-        response = await supabase
-            .from('products')
-            .select();
-      }
+      final response = await supabase
+          .from('products')
+          .select()
+          .eq('is_active', true)
+          .eq('is_featured', true)
+          .order('featured_priority')
+          .limit(limit);
 
       final products = response
-          .map((e) => Product.fromJson(e['id'], e))
+          .map<Product>((e) => Product.fromJson(e['id'], e))
           .toList();
 
       return ApiResult(data: products);
-
     } catch (e) {
       return ApiResult(error: e.toString());
     }
   }
+  //  Get New Products
+  Future<ApiResult<List<Product>>> getNewProducts({
+    int limit = 10,
+  }) async {
+    try {
+      final response = await supabase
+          .from('products')
+          .select()
+          .eq('is_active', true)
+          .eq('is_new', true)
+          .order(
+        'created_at',
+        ascending: false,
+      )
+          .limit(limit);
+
+      final products = response
+          .map<Product>((e) => Product.fromJson(e['id'], e))
+          .toList();
+
+      return ApiResult(data: products);
+    } catch (e) {
+      return ApiResult(error: e.toString());
+    }
+  }
+  //  Get Products Best Sellers
+  Future<ApiResult<List<Product>>> getBestSellerProducts({
+    int limit = 10,
+  }) async {
+    try {
+      final response = await supabase
+          .from('products')
+          .select()
+          .eq('is_active', true)
+          .order(
+        'sold_count',
+        ascending: false,
+      )
+          .limit(limit);
+
+      final products = response
+          .map<Product>((e) => Product.fromJson(e['id'], e))
+          .toList();
+
+      return ApiResult(data: products);
+    } catch (e) {
+      return ApiResult(error: e.toString());
+    }
+  }
+  //  Get Products Deals
+  Future<ApiResult<List<Product>>> getDealsProducts({
+    int limit = 10,
+  }) async {
+    try {
+      final response = await supabase
+          .from('products')
+          .select()
+          .eq('is_active', true)
+          .gt('old_price', 0)
+          .order(
+        'featured_priority',
+      )
+          .limit(limit);
+
+      final products = response
+          .map<Product>((e) => Product.fromJson(e['id'], e))
+          .toList();
+
+      return ApiResult(data: products);
+    } catch (e) {
+      return ApiResult(error: e.toString());
+    }
+  }
+
+
 
   //// PRODUCT PAGE ////
   Future<ApiResult<Product?>> getProductById(String id) async {
@@ -403,12 +477,75 @@ class SupabaseService {
       return null;
     }
   }
+  // Favorite Products
+  // get favorite products
+  Future<ApiResult<List<Product>>> getFavouriteProducts() async {
+    try {
+      final response = await supabase
+          .from('favorites')
+          .select('products(*)');
 
-  String getPublicProfileImage(String userId) {
-    return supabase.storage
-        .from('public_profiles')
-        .getPublicUrl('$userId.jpg');
+      final products = response
+          .map<Product>(
+            (e) => Product.fromJson(
+          e['products']['id'],
+          e['products'],
+        ),
+      )
+          .toList();
+
+      return ApiResult(data: products);
+    } catch (e) {
+      return ApiResult(
+        error: e.toString(),
+      );
+    }
   }
+  // add to favorites
+  Future<ApiResult<void>> addFavourite(
+      String productId,
+      ) async {
+    try {
+      await supabase
+          .from('favorites')
+          .insert({
+        'user_id': supabase.auth.currentUser!.id,
+        'product_id': productId,
+      });
+
+      return ApiResult();
+    } catch (e) {
+      return ApiResult(
+        error: e.toString(),
+      );
+    }
+  }
+// remove from favorites
+  Future<ApiResult<void>> removeFavourite(
+      String productId,
+      ) async {
+    try {
+      await supabase
+          .from('favorites')
+          .delete()
+          .eq(
+        'user_id',
+        supabase.auth.currentUser!.id,
+      )
+          .eq(
+        'product_id',
+        productId,
+      );
+
+      return ApiResult();
+    } catch (e) {
+      return ApiResult(
+        error: e.toString(),
+      );
+    }
+  }
+
+
   Future<ApiResult<int>> getPromoDiscount(String code) async {
     try {
       final response = await supabase
@@ -436,6 +573,11 @@ class SupabaseService {
         .single();
 
     return (response['shipping_price'] as num).toDouble();
+  }
+  String getPublicProfileImage(String userId) {
+    return supabase.storage
+        .from('public_profiles')
+        .getPublicUrl('$userId.jpg');
   }
 
 }

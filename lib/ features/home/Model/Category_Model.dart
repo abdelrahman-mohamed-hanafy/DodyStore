@@ -1,15 +1,26 @@
 class CategoryModel {
   final String id;
   final String name;
-  final String image;
+  final String imageUrl;
+
+  final int sortOrder;
+  final bool isFeatured;
+  final bool isActive;
+
   final DateTime createdAt;
+  final DateTime? updatedAt;
+
   final int productsCount;
 
   CategoryModel({
     required this.id,
     required this.name,
-    required this.image,
+    required this.imageUrl,
+    required this.sortOrder,
+    required this.isFeatured,
+    required this.isActive,
     required this.createdAt,
+    this.updatedAt,
     required this.productsCount,
   });
 
@@ -17,16 +28,26 @@ class CategoryModel {
     return CategoryModel(
       id: json['id']?.toString() ?? '',
 
-      name: json['name'] ?? 'Unknown',
+      name: json['name'] ?? '',
 
-      image: json['image'] ??
+      imageUrl: json['image_url'] ??
           'https://via.placeholder.com/150',
+
+      sortOrder: json['sort_order'] ?? 0,
+
+      isFeatured: json['is_featured'] ?? false,
+
+      isActive: json['is_active'] ?? true,
 
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
 
-      productsCount: json['products_count'] ?? json['count'] ?? 0,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
+
+      productsCount: json['products_count'] ?? 0,
     );
   }
 
@@ -34,25 +55,13 @@ class CategoryModel {
     return {
       'id': id,
       'name': name,
-      'image': image,
+      'image_url': imageUrl,
+      'sort_order': sortOrder,
+      'is_featured': isFeatured,
+      'is_active': isActive,
       'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt?.toIso8601String(),
       'products_count': productsCount,
     };
-  }
-
-  CategoryModel copyWith({
-    String? id,
-    String? name,
-    String? image,
-    DateTime? createdAt,
-    int? productsCount,
-  }) {
-    return CategoryModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      image: image ?? this.image,
-      createdAt: createdAt ?? this.createdAt,
-      productsCount: productsCount ?? this.productsCount,
-    );
   }
 }

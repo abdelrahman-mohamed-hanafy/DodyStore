@@ -10,6 +10,8 @@ import '../../home/UI/pages/Home_Page.dart';
 
 class MainController extends GetxController{
   var currentIndex = 0.obs;
+  final isBottomBarVisible = true.obs;
+
   final pages = [
         () => HomePage(),
         () => ProductsPage(),
@@ -25,5 +27,12 @@ class MainController extends GetxController{
         productController.clearSelectedCategory();
       }
     currentIndex.value = index;
+  }
+  void hideBottomBar() {
+    isBottomBarVisible.value = false;
+  }
+
+  void showBottomBar() {
+    isBottomBarVisible.value = true;
   }
 }

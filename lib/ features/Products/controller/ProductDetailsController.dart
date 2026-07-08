@@ -118,19 +118,12 @@ class ProductDetailsController extends GetxController {
 
   Future<void> addToFavourites() async {
     await addFavouriteToHive();
-    favouriteController.addToFavourites(
-        productId: product!.id,
-        productName: product!.name,
-        productImage: product!.images.first,
-        color: selectedColor.value,
-        size: selectedSize.value,
-        price: product!.price,
-    );
+    favouriteController.addFavourite(product!);
   }
 
   // add favourite to favourites box in hive
   Future<void> addFavouriteToHive() async {
-    final box = hive.favouritesBox;
+    final box = hive.favouriteProductsBox;
     await box.put(productId, {
       'id': product!.id,
       'name': product!.name,
@@ -164,7 +157,7 @@ class ProductDetailsController extends GetxController {
     if (isFavourite.value) {
       addToFavourites();
     } else {
-      favouriteController.removeFromFavourites(productId: productId);
+      favouriteController.removeFavourite(product!);
     }
   }
   Color hexToColor(String hex) {

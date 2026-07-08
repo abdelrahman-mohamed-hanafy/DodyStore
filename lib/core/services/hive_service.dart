@@ -8,7 +8,13 @@ class HiveService {
   late Box productDetailsBox;
   late Box homeCategoriesBox;
   late Box cartBox;
-  late Box favouritesBox;
+  late Box favouriteProductsBox;
+  late Box offersBox;
+  late Box featuredProducts;
+  late Box newProducts;
+  late Box bestSellerProducts;
+  late Box dealsProducts;
+
   Future<void> init() async {
     await Hive.initFlutter();
     firstTimeBox = await Hive.openBox<bool>('firstTime');
@@ -17,8 +23,14 @@ class HiveService {
     productDetailsBox = await Hive.openBox('product_details');
     homeCategoriesBox = await Hive.openBox('home_categories');
     cartBox = await Hive.openBox('cart');
-    favouritesBox = await Hive.openBox('favourites');
+    favouriteProductsBox =
+    await Hive.openBox('favourite_products');
     userNameBox = await Hive.openBox('user_name');
+    offersBox = await Hive.openBox('offers');
+    featuredProducts = await Hive.openBox('featured_products');
+    newProducts = await Hive.openBox('new_products');
+    bestSellerProducts = await Hive.openBox('best_seller_products');
+    dealsProducts = await Hive.openBox('deals_products');
   }
   Future<bool> isFirstTime() async {
     bool isFirstTime = firstTimeBox.get('firstTime') ?? true;

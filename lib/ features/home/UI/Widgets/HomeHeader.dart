@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/utils/routing/routes.dart';
+import '../../../Favourites/controller/favourite_controller.dart';
 import '../../../Products/controller/ProductController.dart';
 import '../../../main/Controller/main_controller.dart';
 import '../../Model/Category_Model.dart';
@@ -14,9 +15,6 @@ class HomeHeader extends StatelessWidget {
   HomeHeader({super.key, required this.scaffoldKey});
 
   final controller = Get.find<HomeController>();
-  final mainController = Get.find<MainController>();
-  final productController = Get.find<ProductController>();
-
   final GlobalKey<ScaffoldState> scaffoldKey;
   CategoryModel? category;
 
@@ -35,7 +33,6 @@ class HomeHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔝 Top Icons Row
         Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -107,14 +104,13 @@ class HomeHeader extends StatelessWidget {
           Obx(
                 () => BadgeIcon(
               icon: Icons.favorite_border_rounded,
-              count: controller.favoriteCount.value,
+              count: controller.favouriteController.favouriteCount,
               onTap: () => Get.toNamed(AppRoutes.favourites),
             ),
           ),
         ],
       ),
-          const SizedBox(height: 8),
-          /// 🔍 Search Bar (Glass أقوى)
+          const SizedBox(height: 16.0),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             height: 50,
@@ -163,15 +159,14 @@ class HomeHeader extends StatelessWidget {
                 const SizedBox(width: 10),
                 itemBuilder: (context, index) {
                   final category = controller.categories[index];
-
                   return InkWell(
                     onTap: () {
-                      productController.selectCategory(category.id);
-                      mainController.changeIndex(1);
+                      controller.productController.selectCategory(category.id);
+                     controller.mainController.changeIndex(1);
                     },
                     child: CategoryItem_Widget(
                       title: category.name,
-                      image: category.image,
+                      image: category.imageUrl,
                     ),
                   );
                 },

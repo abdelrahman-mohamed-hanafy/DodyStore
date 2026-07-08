@@ -38,7 +38,6 @@ class _HomeOfferSliderState extends State<HomeOfferSlider> {
                 discount: offer.discount,
                 buttonText: offer.buttonText,
                 onTap: () {
-                  print("Offer Clicked: ${offer.title}");
                   controller.openOffer(offer);
                 },
               );
@@ -49,8 +48,37 @@ class _HomeOfferSliderState extends State<HomeOfferSlider> {
               enlargeCenterPage: true,
               viewportFraction: .95,
               autoPlayInterval: const Duration(seconds: 4),
+              onPageChanged: (index, reason) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
             ),
-          )
+          ),
+          const SizedBox(height: 12),
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              controller.offers.length,
+                  (index) {
+                final selected = currentIndex == index;
+
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: selected ? 22 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? const Color(0xff7B6BFF)
+                        : Colors.white24,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       );
     });

@@ -6,6 +6,7 @@ import '../../controller/DrawerController.dart';
 import '../../controller/Home_Controller.dart';
 import '../../../../core/widgets/CustomDrawer.dart';
 import '../Widgets/HomeHeader.dart';
+import '../Widgets/ProductSection.dart';
 import '../Widgets/TrendingProductCard.dart';
 import '../states/home_states.dart';
 
@@ -25,80 +26,68 @@ class HomePage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           key: scaffoldKey,
           drawer: CustomDrawer(),
-          body: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          body: RefreshIndicator(
+            onRefresh: controller.refreshHomePage,
+            child: SingleChildScrollView(
+              controller: controller.scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
 
-                /// 🔝 HEADER
-                HomeHeader(scaffoldKey: scaffoldKey),
+                  /// 🔝 HEADER
+                  HomeHeader(scaffoldKey: scaffoldKey),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                /// 🔥 TITLE
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12),
-                  child: Text(
-                    '🔥 Trending Now',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                /// 🔥 PRODUCTS
-                SizedBox(
-                  height: 230,
-                  child: Obx(() {
+                  /// 🔥 TITLE
+                   Obx(() {
                     final state = controller.state.value;
 
-                    /// 🔄 LOADING
                     if (state is Loading) {
                       return const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
+                        child: CircularProgressIndicator(),
                       );
                     }
 
-                    /// ❌ ERROR
                     if (state is HomeError) {
                       return Center(
                         child: Text(
                           state.message,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                       );
                     }
 
-                    final products = controller.products;
+                    return Column(
+                      children: [
 
-                    /// 🟡 EMPTY
-                    if (products.isEmpty) {
-                      return const Center(
-                        child: Text("No Products Found"),
-                      );
-                    }
+                        ProductSection(
+                          title: "⭐ Featured Products",
+                          products: controller.featuredProducts,
+                        ),
 
-                    /// ✅ SUCCESS
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: products.length,
-                      itemBuilder: (context, index) {
-                        final product = products[index];
-                        return TrendingProductCard(product: product);
-                      },
+                        ProductSection(
+                          title: "🆕 New Arrivals",
+                          products: controller.newProducts,
+                        ),
+
+                        ProductSection(
+                          title: "🔥 Best Sellers",
+                          products: controller.bestSellerProducts,
+                        ),
+
+                        ProductSection(
+                          title: "💸 Hot Deals",
+                          products: controller.dealsProducts,
+                        ),
+                      ],
                     );
                   }),
-                ),
 
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

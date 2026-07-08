@@ -8,13 +8,11 @@ import '../../controller/Home_Controller.dart';
 
 class TrendingProductCard extends StatelessWidget {
   final Product product;
-
-  const TrendingProductCard({super.key, required this.product});
+  final controller = Get.find<HomeController>();
+   TrendingProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<HomeController>();
-
     return InkWell(
       onTap: () {
         Get.toNamed(
@@ -75,9 +73,7 @@ class TrendingProductCard extends StatelessWidget {
                     top: 2,
                     right: 2,
                     child: Obx(() {
-                      final isFav =
-                      controller.isFavorite(product.id);
-
+                      final fav = controller.favouriteController.isFavourite(product.id);
                       return Container(
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.4),
@@ -85,13 +81,13 @@ class TrendingProductCard extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            controller.toggleFavorite(product.id);
+                            controller.favouriteController.toggleFavourite(product);
                           },
                           icon: Icon(
-                            isFav
+                            fav
                                 ? Icons.favorite
                                 : Icons.favorite_border,
-                            color: isFav
+                            color: fav
                                 ? Color(0xFFFF7CA3)
                                 : Colors.white,
                           ),

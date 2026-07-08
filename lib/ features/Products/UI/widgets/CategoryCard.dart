@@ -71,7 +71,7 @@ class CategoryCard extends StatelessWidget {
                       bottomRight: Radius.circular(20),
                     ),
                     child: Image.network(
-                      category.image,
+                      category.imageUrl,
                       width: 80,
                       height: double.infinity,
                       fit: BoxFit.cover,

@@ -44,7 +44,9 @@ class ProductController extends GetxController {
     }
   }
   Future<void> fetchRandomProductsFromAllCategories() async {
-    final result = await supaService.getProducts();
+    final result = await supaService.getNewProducts(
+      limit: 10,
+    );
 
     if (!result.isSuccess) {
       throw Exception(result.error);
